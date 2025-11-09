@@ -1,5 +1,4 @@
-# elk-tls-docker
-
+# elk-suri
 This docker-compose project will assist with setting up and creating a ELK stack using self-signed TLS certificates.
 
 ## Environment Details
