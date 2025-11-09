@@ -100,8 +100,6 @@ create_keystore
 create_self_signed_ca
 create_certificates
 
-openssl pkcs8 -in /secrets/certificates/logstash/logstash.key -topk8 -nocrypt -out /secrets/certificates/logstash/logstash.pkcs8.key
-
 chown -R 1000:0 $OUTPUT_DIR
 
 printf "=====================================================\n"
