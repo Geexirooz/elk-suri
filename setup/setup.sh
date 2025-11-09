@@ -101,8 +101,6 @@ create_super_user()
     printf "=====================================================\n"
     echo "Creating Kibana user"
     bin/elasticsearch-users useradd $KIBANA_USERNAME -p $KIBANA_PASSWORD -r kibana_system
-    echo "Creating Logstash user"
-    bin/elasticsearch-users useradd $LOGSTASH_USERNAME -p $LOGSTASH_PASSWORD -r logstash_system
     echo "Creating super user"
     bin/elasticsearch-users useradd $SUPERUSER_USERNAME -p $SUPERUSER_PASSWORD -r superuser
     echo "Moving the realm files to OUTPUT_DIR"

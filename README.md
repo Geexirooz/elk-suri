@@ -5,7 +5,6 @@ This docker-compose project will assist with setting up and creating a ELK stack
 This docker-compose project will create the following Elastic containers based on version 7.12.0:
 
 * Elasticsearch
-* Logstash
 * Kibana
 
 ## Setup
@@ -15,20 +14,24 @@ In order to use this project, you must first include the following in a file nam
 > Copy or create your own `.env` from the provided example or from the code block below
 
 ```text
-ELK_VERSION=7.15.0
-ELASTIC_USERNAME=elastic
-ELASTIC_PASSWORD=some_password
+ELK_VERSION=9.2.0
+
+# Credentials
+KIBANA_USERNAME=kibana_geexi
+KIBANA_PASSWORD=some_password_for_kibana
+SUPERUSER_USERNAME=geexirooz
+SUPERUSER_PASSWORD=some_other_password
+
+# URLs
+KIBANA_URL=https://0.0.0.0:5601
 
 # Configuration Variables
 ELASTICSEARCH_HEAP=2g
-LOGSTASH_HEAP=1g
 XPACK_ENCRYPTION_KEY=somesuperlongstringlikethisoneMQBbtsynu4bV2uxLy
 
 # Self signed TLS certificates
-CA_PASSWORD=some_password
 CA_DAYS=3650
 ELASTIC_DIR=/usr/share/elasticsearch
-LOGSTASH_DIR=/usr/share/logstash
 KIBANA_DIR=/usr/share/kibana
 ```
 
