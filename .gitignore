@@ -3,6 +3,8 @@
 
 # ELK Certs/keystore/creds
 secrets/*
+!secrets/.gitkeep
 
 # Suricata logs
 suricata/logs/*
+!suricata/logs/.gitkeep
