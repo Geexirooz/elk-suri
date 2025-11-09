@@ -1,9 +1,9 @@
 # elk-suri
-This docker-compose project will assist with setting up and creating a ELK stack using self-signed TLS certificates.
+This docker-compose project will assist with setting up and creating a ELK stack (with no L for now) using self-signed TLS certificates.
 This repo's idea comes from [this](https://github.com/swimlane/elk-tls-docker/tree/master) great repository
 
 ## Environment Details
-This docker-compose project will create the following Elastic containers based on version 7.12.0:
+This docker-compose project will create the following Elastic containers based on version 9.2.0:
 
 * Elasticsearch
 * Kibana
@@ -40,11 +40,9 @@ KIBANA_DIR=/usr/share/kibana
 
 **Additionally, you must either clone this repository or download the entire repository in order to build and run these containers.**
 
-### Keystore
+### Keystore, Certificates and Users Credentials
 
-Before we build or create our containers we first need to create our keystore and certificates.  You can do this using the [docker-compose.setup.yml](docker-compose.setup.yml) yaml file.
-
-#### Creating Keystore for self-signed certificates
+Before we build or create our containers we first need to create our keystore, certificates and the users.  You can do this using the [docker-compose.setup.yml](docker-compose.setup.yml) yaml file.
 
 To do so you simply run the following command first:
 
@@ -54,17 +52,18 @@ docker compose -f docker-compose.setup.yml run --rm certs
 
 ## Running a development environment
 
-Now, that you have your keys/certs and passwords set we can then just restart the containers by running:
+Now, that you have your keys/certs and passwords set we can then just spin up the containers by running:
 
 ```
 docker compose up -d
 ```
 
-You should be able to login into the ELK stack and be on your way.
+You should be able to login into the ELK stack with `SUPERUSER_USERNAME` user from your `.env` file.
 
 ## Handy commands
 
 To remove all images from your system run: ```docker rmi $(docker images -a -q)```
+
 To remove all volumes from your system run: ```docker volume prune```
 
 ## License
