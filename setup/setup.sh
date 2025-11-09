@@ -2,8 +2,6 @@
 set -e
 
 CONFIG_DIR=/usr/share/elasticsearch/config
-OUTPUT_FILE=/secrets/elasticsearch.keystore
-NATIVE_FILE=$CONFIG_DIR/elasticsearch.keystore
 OUTPUT_DIR=/secrets
 CA_DIR=$OUTPUT_DIR/certificate_authority
 KEYSTORES_DIR=$OUTPUT_DIR/keystores
@@ -15,6 +13,10 @@ CA_KEY=$CA_DIR/ca/ca.key
 BUNDLE_ZIP=$OUTPUT_DIR/bundle.zip
 CERT_KEYSTORES_ZIP=$OUTPUT_DIR/cert_keystores.zip
 HTTP_ZIP=$OUTPUT_DIR/http.zip
+OUTPUT_FILE=/secrets/elasticsearch.keystore
+NATIVE_FILE=$CONFIG_DIR/elasticsearch.keystore
+REALM_USERS_FILE=$CONFIG_DIR/users
+REALM_USERS_ROLES_FILE=$CONFIG_DIR/users_roles
 
 create_self_signed_ca()
 {
@@ -39,32 +41,6 @@ create_certificates()
     bin/elasticsearch-certutil cert --silent --in $CONFIG_DIR/instances.yml --out $BUNDLE_ZIP --ca-cert $CA_CERT --ca-key $CA_KEY --ca-pass "" --pem
     unzip $BUNDLE_ZIP -d $CERT_DIR
 }
-
-create_keystore()
-{
-    printf "========== Creating Elasticsearch Keystore ==========\n"
-    printf "=====================================================\n"
-    elasticsearch-keystore create >> /dev/null
-
-    ## Setting Bootstrap Password
-    echo "Setting bootstrap password..."
-    (echo "$ELASTIC_PASSWORD" | elasticsearch-keystore add -x 'bootstrap.password')
-
-    # Replace current Keystore
-    if [ -f "$OUTPUT_FILE" ]; then
-        echo "Remove old elasticsearch.keystore"
-        rm $OUTPUT_FILE
-    fi
-
-    #setup_passwords
-    echo "Saving new elasticsearch.keystore"
-    mv $NATIVE_FILE $OUTPUT_FILE
-    chmod 0644 $OUTPUT_FILE
-
-    printf "======= Keystore setup completed successfully =======\n"
-    printf "=====================================================\n"
-}
-
 
 remove_existing_certificates()
 {
@@ -94,11 +70,51 @@ create_directory_structure()
     mkdir $CERT_DIR
 }
 
+create_keystore()
+{
+    printf "========== Creating Elasticsearch Keystore ==========\n"
+    printf "=====================================================\n"
+    elasticsearch-keystore create >> /dev/null
+
+    ## Setting Bootstrap Password
+    echo "Setting bootstrap password..."
+    (echo "$ELASTIC_PASSWORD" | elasticsearch-keystore add -x 'bootstrap.password')
+
+    # Replace current Keystore
+    if [ -f "$OUTPUT_FILE" ]; then
+        echo "Remove old elasticsearch.keystore"
+        rm $OUTPUT_FILE
+    fi
+
+    #setup_passwords
+    echo "Saving new elasticsearch.keystore"
+    mv $NATIVE_FILE $OUTPUT_FILE
+    chmod 0644 $OUTPUT_FILE
+
+    printf "======= Keystore setup completed successfully =======\n"
+    printf "=====================================================\n"
+}
+
+create_super_user()
+{
+    printf "====== Creating Super user ======\n"
+    printf "=====================================================\n"
+    echo "Creating Kibana user"
+    bin/elasticsearch-users useradd $KIBANA_USERNAME -p $KIBANA_PASSWORD -r kibana_system
+    echo "Creating Logstash user"
+    bin/elasticsearch-users useradd $LOGSTASH_USERNAME -p $LOGSTASH_PASSWORD -r logstash_system
+    echo "Creating super user"
+    bin/elasticsearch-users useradd $SUPERUSER_USERNAME -p $SUPERUSER_PASSWORD -r superuser
+    echo "Moving the realm files to OUTPUT_DIR"
+    cp $REALM_USERS_ROLES_FILE $REALM_USERS_FILE $OUTPUT_DIR
+}
+
 remove_existing_certificates
 create_directory_structure
-create_keystore
 create_self_signed_ca
 create_certificates
+create_keystore
+create_super_user
 
 chown -R 1000:0 $OUTPUT_DIR
 

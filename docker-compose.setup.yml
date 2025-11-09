@@ -11,7 +11,12 @@ services:
       - ./setup/setup.sh:${ELASTIC_DIR}/config/setup.sh
       - ./setup/instances.yml:${ELASTIC_DIR}/config/instances.yml:ro
     environment: 
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      KIBANA_USERNAME: ${KIBANA_USERNAME}
+      KIBANA_PASSWORD: ${KIBANA_PASSWORD}
+      LOGSTASH_USERNAME: ${LOGSTASH_USERNAME}
+      LOGSTASH_PASSWORD: ${LOGSTASH_PASSWORD}
+      SUPERUSER_USERNAME: ${SUPERUSER_USERNAME}
+      SUPERUSER_PASSWORD: ${SUPERUSER_PASSWORD}
     networks: 
       - elk
 

@@ -15,6 +15,10 @@ secrets:
     file: ./secrets/certificates/elasticsearch/elasticsearch.key
   elasticsearch.cert:
     file: ./secrets/certificates/elasticsearch/elasticsearch.crt
+  elasticsearch.users:
+    file: ./secrets/users
+  elasticsearch.users.roles:
+    file: ./secrets/users_roles
   kibana.key:
     file: ./secrets/certificates/kibana/kibana.key
   kibana.cert:
@@ -39,8 +43,6 @@ services:
     restart: unless-stopped
     environment:
       CONFIG_DIR: ${ELASTIC_DIR}/config
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       ES_JAVA_OPTS: -Xmx${ELASTICSEARCH_HEAP} -Xms${ELASTICSEARCH_HEAP}
       bootstrap.memory_lock: "true"
       discovery.type: single-node
@@ -48,14 +50,18 @@ services:
       - data:${ELASTIC_DIR}
       - ./elasticsearch/config/elasticsearch.yml:${ELASTIC_DIR}/config/elasticsearch.yml:ro
     secrets:
-      - source: elasticsearch.keystore
-        target: ${ELASTIC_DIR}/config/elasticsearch.keystore
       - source: ca.crt
         target: ${ELASTIC_DIR}/config/ca.crt
       - source: elasticsearch.cert
         target: ${ELASTIC_DIR}/config/elasticsearch.crt
       - source: elasticsearch.key
         target: ${ELASTIC_DIR}/config/elasticsearch.key
+      - source: elasticsearch.keystore
+        target: ${ELASTIC_DIR}/config/elasticsearch.keystore
+      - source: elasticsearch.users
+        target: ${ELASTIC_DIR}/config/users
+      - source: elasticsearch.users.roles
+        target: ${ELASTIC_DIR}/config/users_roles
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -86,8 +92,8 @@ services:
       - ./kibana/config/kibana.yml:${KIBANA_DIR}/config/kibana.yml:ro
     environment:
       CONFIG_DIR: ${KIBANA_DIR}/config
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      ELASTIC_USERNAME: ${KIBANA_USERNAME}
+      ELASTIC_PASSWORD: ${KIBANA_PASSWORD}
       ENCRYPTION_KEY: ${XPACK_ENCRYPTION_KEY}
       KIBANA_URL: ${KIBANA_URL}
     secrets:
@@ -124,8 +130,8 @@ services:
     environment:
       path.settings: null
       CONFIG_DIR: ${LOGSTASH_DIR}/config
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      ELASTIC_USERNAME: ${LOGSTASH_USERNAME}
+      ELASTIC_PASSWORD: ${LOGSTASH_PASSWORD}
       LS_JAVA_OPTS: "-Xmx${LOGSTASH_HEAP} -Xms${LOGSTASH_HEAP}"
     secrets:
       - source: ca.crt

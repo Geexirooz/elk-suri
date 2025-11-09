@@ -1,5 +1,5 @@
 ## Cluster Settings
-cluster.name: "elk-tls-cluster"
+cluster.name: "elk-suri"
 network.host: "0.0.0.0"
 http.host: 0.0.0.0
 
@@ -24,3 +24,6 @@ xpack.security.http.ssl.enabled: true
 xpack.security.http.ssl.key: ${CONFIG_DIR}/elasticsearch.key
 xpack.security.http.ssl.certificate: ${CONFIG_DIR}/elasticsearch.crt
 xpack.security.http.ssl.certificate_authorities: ${CONFIG_DIR}/ca.crt
+
+#Authentication Relam (file realm)
+xpack.security.authc.realms.file.file1.order: 0
