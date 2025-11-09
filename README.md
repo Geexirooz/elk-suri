@@ -1,5 +1,6 @@
 # elk-suri
 This docker-compose project will assist with setting up and creating a ELK stack using self-signed TLS certificates.
+This repo's idea comes from [this](https://github.com/swimlane/elk-tls-docker/tree/master) great repository
 
 ## Environment Details
 This docker-compose project will create the following Elastic containers based on version 7.12.0:
