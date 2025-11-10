@@ -34,6 +34,13 @@ XPACK_ENCRYPTION_KEY=somesuperlongstringlikethisoneMQBbtsynu4bV2uxLy
 CA_DAYS=3650
 ELASTIC_DIR=/usr/share/elasticsearch
 KIBANA_DIR=/usr/share/kibana
+
+# Suricata Configuration
+SURICATA_VERSION=8.0.2
+INTERFACE=eth0
+SURICATA_DIR=/etc/suricata
+SURICATA_RULES_SOURCES="all"
+#SURICATA_RULES_SOURCES="et/open oisf/trafficid abuse.ch/sslbl-blacklist abuse.ch/sslbl-ja3 abuse.ch/feodotracker abuse.ch/urlhaus etnetera/aggressive tgreen/hunting stamus/lateral pawpatrules ptrules/open aleksibovellan/nmap"
 ```
 
 > Note: You may need to change the size of the HEAP variables in the above configuration file based on your system requirements.  The settings present are for a machine with 8GB of memory
