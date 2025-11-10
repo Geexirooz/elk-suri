@@ -92,7 +92,7 @@ create_super_user() {
 	bin/elasticsearch-users useradd $KIBANA_USERNAME -p $KIBANA_PASSWORD -r kibana_system
 	echo "Creating super user"
 	bin/elasticsearch-users useradd $SUPERUSER_USERNAME -p $SUPERUSER_PASSWORD -r superuser
-	echo "Moving the realm files to OUTPUT_DIR"
+	echo "Moving the realm files to $OUTPUT_DIR"
 	cp $REALM_USERS_ROLES_FILE $REALM_USERS_FILE $OUTPUT_DIR
 }
 
