@@ -19,6 +19,10 @@ secrets:
     file: ./secrets/certificates/kibana/kibana.key
   kibana.cert:
     file: ./secrets/certificates/kibana/kibana.crt
+  filebeat.key:
+    file: ./secrets/certificates/filebeat/filebeat.key
+  filebeat.cert:
+    file: ./secrets/certificates/filebeat/filebeat.crt
 
 services:
   elasticsearch:
@@ -102,6 +106,39 @@ services:
       - elk
     depends_on: 
       - elasticsearch
+
+  filebeat:
+    container_name: filebeat
+    hostname: filebeat
+    build:
+      context: filebeat/
+      args:
+        ELK_VERSION: ${ELK_VERSION}
+    restart: unless-stopped
+    command: >
+      sh -c "filebeat -e"
+    volumes:
+      - ./filebeat/config/filebeat.yml:${FILEBEAT_DIR}/filebeat.yml:ro
+      - ./suricata/logs:/var/log/suricata:ro
+    environment:
+      CONFIG_DIR: ${FILEBEAT_DIR}/config
+      LS_JAVA_OPTS: "-Xmx${FILEBEAT_HEAP} -Xms${FILEBEAT_HEAP}"
+      ELASTIC_USERNAME: ${BEATS_USERNAME}
+      ELASTIC_PASSWORD: ${BEATS_PASSWORD}
+    secrets:
+      - source: ca.crt
+        target: ${FILEBEAT_DIR}/config/ca.crt
+      - source: filebeat.cert
+        target: ${FILEBEAT_DIR}/config/filebeat.crt
+      - source: filebeat.key
+        target: ${FILEBEAT_DIR}/config/filebeat.key
+    ports:
+      - "9000:9000"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+      - suricata
 
   suricata:
     build:

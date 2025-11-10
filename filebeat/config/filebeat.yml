@@ -1,0 +1,29 @@
+name: filebeat
+setup.template:
+  enabled: true
+output.elasticsearch.username: ${ELASTIC_USERNAME}
+output.elasticsearch.password: ${ELASTIC_PASSWORD}
+path.config: ${CONFIG_DIR}
+
+filebeat.modules:
+- module: suricata
+  eve:
+    enabled: true
+    # Optional
+    var.paths: ["/var/log/suricata/eve.json"]
+
+output.elasticsearch:
+  enabled: true
+  hosts: ["https://elasticsearch:9200"]
+  ssl.certificate_authorities: ["${CONFIG_DIR}/ca.crt"]
+  ssl.certificate: "${CONFIG_DIR}/filebeat.crt"
+  ssl.key: "${CONFIG_DIR}/filebeat.key"
+
+setup.kibana:
+  host: "https://kibana:5601"
+  ssl.certificate_authorities: ["${CONFIG_DIR}/ca.crt"]
+
+setup.dashboards.enabled: true
+setup.dashboards.retry.enabled: true
+setup.dashboards.retry.interval: 5s
+setup.dashboards.retry.maximum: 100
