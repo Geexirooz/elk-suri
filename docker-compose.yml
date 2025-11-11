@@ -115,10 +115,10 @@ services:
       args:
         ELK_VERSION: ${ELK_VERSION}
     restart: unless-stopped
-    command: >
-      sh -c "filebeat -e"
+    command: ["/entrypoint.sh"]
     volumes:
-      - ./filebeat/config/filebeat.yml:${FILEBEAT_DIR}/filebeat.yml:ro
+      - ./filebeat/entrypoint.sh:/entrypoint.sh:ro
+      - ./filebeat/config/filebeat.yml:${FILEBEAT_DIR}/filebeat.yml
       - ./suricata/logs:/var/log/suricata:ro
     environment:
       CONFIG_DIR: ${FILEBEAT_DIR}/config
